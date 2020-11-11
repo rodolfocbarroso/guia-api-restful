@@ -53,7 +53,7 @@ namespace GuiaApiRestful.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<Categoria>> Put( int id, [FromBody] Categoria model)
+        public async Task<ActionResult<Categoria>> Put( int id, [FromBody] Categoria model, [FromServices] DataContext context)
         {
             if (id != model.Id)
                 return NotFound(new { message = "Categoria não encontrada" });
@@ -61,7 +61,17 @@ namespace GuiaApiRestful.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(model);
+            try
+            {
+               context.Entry<Categoria>(model).State = EntityState.Modified;
+               await context.SaveChangesAsync();
+
+               return Ok(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest(new {message = "Não foi possível atualizar a categoria" });
+            }
         }
 
         [HttpDelete]
