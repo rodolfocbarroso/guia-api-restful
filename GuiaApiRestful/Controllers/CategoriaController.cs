@@ -23,16 +23,16 @@ namespace GuiaApiRestful.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<Categoria>> GetById( int id, [FromServices] DataContext context)
+        public async Task<ActionResult<Categoria>> GetById(int id, [FromServices] DataContext context)
         {
-            var categoria = await context.Categorias.AsNoTracking().FirstOrDefaultAsync( categoria => categoria.Id == id);
-            
+            var categoria = await context.Categorias.AsNoTracking().FirstOrDefaultAsync(categoria => categoria.Id == id);
+
             return categoria;
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<Categoria>> Post([FromBody]Categoria model, [FromServices] DataContext context)
+        public async Task<ActionResult<Categoria>> Post([FromBody] Categoria model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -46,14 +46,14 @@ namespace GuiaApiRestful.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new {message = "Não foi possível criar a categoria"});
+                return BadRequest(new { message = "Não foi possível criar a categoria" });
             }
 
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<Categoria>> Put( int id, [FromBody] Categoria model, [FromServices] DataContext context)
+        public async Task<ActionResult<Categoria>> Put(int id, [FromBody] Categoria model, [FromServices] DataContext context)
         {
             if (id != model.Id)
                 return NotFound(new { message = "Categoria não encontrada" });
@@ -63,22 +63,38 @@ namespace GuiaApiRestful.Controllers
 
             try
             {
-               context.Entry<Categoria>(model).State = EntityState.Modified;
-               await context.SaveChangesAsync();
+                context.Entry<Categoria>(model).State = EntityState.Modified;
+                await context.SaveChangesAsync();
 
-               return Ok(model);
+                return Ok(model);
             }
             catch (DbUpdateConcurrencyException)
             {
-                return BadRequest(new {message = "Não foi possível atualizar a categoria" });
+                return BadRequest(new { message = "Não foi possível atualizar a categoria" });
             }
         }
 
         [HttpDelete]
         [Route("{id:int}")]
-        public async Task<ActionResult<List<Categoria>>> Delete()
+        public async Task<ActionResult<Categoria>> Delete(int id, [FromServices] DataContext context)
         {
-            return Ok();
+            var categoria = await context.Categorias.FirstOrDefaultAsync(categoria => categoria.Id == id);
+            if (categoria == null)
+            {
+                return NotFound(new { message = "Categoria não encontrada" });
+            }
+
+            try
+            {
+                context.Categorias.Remove(categoria);
+                await context.SaveChangesAsync();
+
+                return Ok(categoria);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível remover a categoria" });
+            }
         }
     }
 }
