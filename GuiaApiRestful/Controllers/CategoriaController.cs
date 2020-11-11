@@ -32,12 +32,23 @@ namespace GuiaApiRestful.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<Categoria>> Post([FromBody]Categoria model)
+        public async Task<ActionResult<Categoria>> Post([FromBody]Categoria model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(model);
+            try
+            {
+                await context.Categorias.AddAsync(model);
+                await context.SaveChangesAsync();
+
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new {message = "Não foi possível criar a categoria"});
+            }
+
         }
 
         [HttpPut]
