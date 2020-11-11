@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GuiaApiRestful.Data;
 using GuiaApiRestful.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GuiaApiRestful.Controllers
 {
@@ -12,10 +14,11 @@ namespace GuiaApiRestful.Controllers
     {
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<List<Categoria>>> Get()
+        public async Task<ActionResult<List<Categoria>>> Get([FromServices] DataContext context)
         {
-            
-            return new List<Categoria>();
+            var categorias = await context.Categorias.AsNoTracking().ToListAsync();
+
+            return categorias;
         }
 
         [HttpGet]
