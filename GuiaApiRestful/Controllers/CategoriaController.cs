@@ -23,9 +23,11 @@ namespace GuiaApiRestful.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<Categoria>> GetById( int id)
+        public async Task<ActionResult<Categoria>> GetById( int id, [FromServices] DataContext context)
         {
-            return new Categoria();
+            var categoria = await context.Categorias.AsNoTracking().FirstOrDefaultAsync( categoria => categoria.Id == id);
+            
+            return categoria;
         }
 
         [HttpPost]
