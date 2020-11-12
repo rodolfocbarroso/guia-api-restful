@@ -32,5 +32,25 @@ namespace GuiaApiRestful.Controllers
 
             return Ok(produto);
         }
+
+        [HttpPost]
+        [Route("")]
+        public async Task<ActionResult<Produto>> Post([FromBody] Produto model, [FromServices] DataContext context)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await context.Produtos.AddAsync(model);
+                await context.SaveChangesAsync();
+
+                return Ok(model);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível criar o produto" });
+            }
+        }
     }
 }
