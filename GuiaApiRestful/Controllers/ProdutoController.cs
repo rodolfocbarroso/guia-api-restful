@@ -16,7 +16,10 @@ namespace GuiaApiRestful.Controllers
         [Route("")]
         public async Task<ActionResult<List<Produto>>> Get([FromServices] DataContext context)
         {
-            var produtos = await context.Produtos.AsNoTracking().ToListAsync();
+            var produtos = await context.Produtos
+                .Include(produto => produto.Categoria)
+                .AsNoTracking()
+                .ToListAsync();
 
             return Ok(produtos);
         }
