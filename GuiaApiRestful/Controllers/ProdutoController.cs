@@ -21,5 +21,16 @@ namespace GuiaApiRestful.Controllers
             return Ok(produtos);
         }
 
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<List<Produto>>> GetById(int id, [FromServices] DataContext context)
+        {
+            var produto = await context.Produtos
+                .Include(produto => produto.Categoria)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(produto => produto.Id == id);
+
+            return Ok(produto);
+        }
     }
 }
