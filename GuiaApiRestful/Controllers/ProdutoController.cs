@@ -52,5 +52,28 @@ namespace GuiaApiRestful.Controllers
                 return BadRequest(new { message = "Não foi possível criar o produto" });
             }
         }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Produto>> Put(int id, [FromBody] Produto model, [FromServices] DataContext context)
+        {
+            if (id != model.Id)
+                return NotFound(new { message = "Produto não encontrado" });
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                context.Entry<Produto>(model).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+
+                return Ok(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest(new { message = "Não foi possível atualizar o produto" });
+            }
+        }
     }
 }
