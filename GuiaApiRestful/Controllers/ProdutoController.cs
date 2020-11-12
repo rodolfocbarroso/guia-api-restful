@@ -75,5 +75,28 @@ namespace GuiaApiRestful.Controllers
                 return BadRequest(new { message = "Não foi possível atualizar o produto" });
             }
         }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Produto>> Delete(int id, [FromServices] DataContext context)
+        {
+            var produto = await context.Produtos.FirstOrDefaultAsync(produto => produto.Id == id);
+            if (produto == null)
+            {
+                return NotFound(new { message = "Produto não encontrado" });
+            }
+
+            try
+            {
+                context.Produtos.Remove(produto);
+                await context.SaveChangesAsync();
+
+                return Ok(produto);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível remover o produto" });
+            }
+        }
     }
 }
