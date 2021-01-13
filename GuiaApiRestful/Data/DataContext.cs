@@ -16,5 +16,6 @@ namespace GuiaApiRestful.Data
 
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
