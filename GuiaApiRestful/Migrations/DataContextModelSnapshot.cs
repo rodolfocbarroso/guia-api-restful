@@ -64,31 +64,6 @@ namespace GuiaApiRestful.Migrations
                     b.ToTable("Produto");
                 });
 
-            modelBuilder.Entity("GuiaApiRestful.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("GuiaApiRestful.Models.Produto", b =>
                 {
                     b.HasOne("GuiaApiRestful.Models.Categoria", "Categoria")
